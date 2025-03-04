@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Speedrun.Dtos;
@@ -31,18 +33,49 @@ namespace Speedrun.Controllers
             if (srSegment == null) return NotFound();
             return Ok(srSegment);
         }
+        [HttpGet("srstrain/{srStrainId}")]
+        public async Task<ActionResult<IEnumerable<SRSegmentDto>>> GetSRSegmentBySRStrainId(int srStrainId)
+        {
+            try
+            {
+                var srSegments = await _srSegmentService.GetSRSegmentBySRStrainId(srStrainId);
+                return Ok(srSegments);
+            }
+            catch (ArgumentException ex)
+            {
+                // Handle the specific exception for non-existent strain
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
         [HttpPost]
         public async Task<ActionResult<SRSegmentDto>> CreateSRSegment(SRSegmentDto srSegmentDto)
         {
-            var createdSRSegment = await _srSegmentService.CreateSRSegment(srSegmentDto);
-            return CreatedAtAction(nameof(GetSRSegment), new { id = createdSRSegment.Id }, createdSRSegment);
+            try
+            {
+                var createdSRSegment = await _srSegmentService.CreateSRSegment(srSegmentDto);
+                return CreatedAtAction(nameof(GetSRSegment), new { id = createdSRSegment.Id }, createdSRSegment);
+
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSRSegment(int id, SRSegmentDto srSegmentDto)
+        public async Task<IActionResult> UpdateSRSegment(int srSegmentId, SRSegmentDto srSegmentDto)
         {
-            var updatedSRSegment = await _srSegmentService.UpdateSRSegment(id, srSegmentDto);
+            var updatedSRSegment = await _srSegmentService.UpdateSRSegment(srSegmentId, srSegmentDto);
             if (updatedSRSegment == null) return NotFound();
             return NoContent();
         }
