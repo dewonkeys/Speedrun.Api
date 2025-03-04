@@ -3,9 +3,9 @@
 A .NET Core API for managing speedrun data including segments, strains, and systems.
 
 ## Features
-- CRUD operations for speedrun segments
-- CRUD operations for speedrun strains
-- CRUD operations for speedrun systems
+- CRUD operations for speedrun systems - the overarching speedrun, i.e. "Morning Routine"
+- CRUD operations for speedrun strains - systems may have different strains - like "Morning Routine: Rushed" and "Morning Routine: Full"
+- CRUD operations for speedrun segments - the individually timed legs of a speedrun - "Brush teeth" - "Shower" - etc.
 
 ## API Endpoints
 
